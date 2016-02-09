@@ -1,35 +1,73 @@
 package com.swedbank;
 
+import java.util.ArrayList;
+
 /**
  * Created by p998ueh on 2016.02.09.
  */
 public class Frame {
-    private int firstRoll;
-    private int secondRoll;
+    private ArrayList<Integer> rollScoreList = new ArrayList<Integer>();
+    private ArrayList<Frame> frames;
+    private int frameNumber;
 
-    public Frame(int firstRoll, int secondRoll) {
-        this.firstRoll = firstRoll;
-        this.secondRoll = secondRoll;
+    public ArrayList<Integer> getRollScoreList() {
+        return rollScoreList;
     }
 
-    public int getFirstRoll() {
-        return firstRoll;
+    public void setFrames(ArrayList<Frame> frames) {
+        this.frames = frames;
     }
 
-    public int getSecondRoll() {
-        return secondRoll;
+    public void setFrameNumber(int frameNumber) {
+        this.frameNumber = frameNumber;
     }
 
-    public String getFrameResult() {
-        if (firstRoll == 10)
-            return "X";
-        else if (firstRoll + secondRoll == 10)
-            return firstRoll + "\\";
+    public void roll(int score) {
+        rollScoreList.add(score);
+    }
+
+    public boolean isStrike() {
+        if (rollScoreList.get(0) == 10)
+            return true;
         else
-            return Integer.toString(firstRoll + secondRoll);
+            return false;
+    }
+
+    public boolean isSpare() {
+        if (rollScoreList.get(0) + rollScoreList.get(1) == 10)
+            return true;
+        else
+            return false;
+    }
+
+    public int strikeBonus() {
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        for (int i = frameNumber + 1; i < 10; i++) {
+            list.addAll(frames.get(i).getRollScoreList());
+        }
+        if (frameNumber == 9)
+            return rollScoreList.get(1) + rollScoreList.get(2);
+        return list.get(0) + list.get(1);
+    }
+
+    public int spareBonus() {
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        for (int i = frameNumber + 1; i < 10; i++) {
+            list.addAll(frames.get(i).getRollScoreList());
+        }
+        if (frameNumber == 9)
+            return rollScoreList.get(2);
+        return list.get(0);
     }
 
     public int getFrameScore() {
-        return firstRoll + secondRoll;
+        int score;
+        if (isStrike())
+            score = 10 + strikeBonus();
+        else if (isSpare())
+            score = 10 + spareBonus();
+        else
+            score = rollScoreList.get(0) + rollScoreList.get(1);
+        return score;
     }
 }

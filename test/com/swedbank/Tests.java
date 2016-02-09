@@ -2,98 +2,83 @@ package com.swedbank;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class Tests {
 
     @Test
-    public void testLastFrameWithExtraRollFirstRoll() throws Exception {
+    public void testAllZero() throws Exception {
         BowlingCalculator bc = new BowlingCalculator();
-        bc.roll(10, 10, 10);
-        bc.roll(3, 3, 3);
-        bc.roll(5, 5, 5);
-        bc.roll(0, 0, 0);
-
-        assertEquals("Should be 10", 10, bc.frames.get(0).getFirstRoll());
-        assertEquals("Should be 10", 3, bc.frames.get(1).getFirstRoll());
-        assertEquals("Should be 10", 5, bc.frames.get(2).getFirstRoll());
-        assertEquals("Should be 10", 0, bc.frames.get(3).getFirstRoll());
-    }
-
-    @Test
-    public void testLastFrameWithExtraRollSecondRoll() throws Exception {
-        BowlingCalculator bc = new BowlingCalculator();
-        bc.roll(10, 10, 10);
-        bc.roll(3, 3, 3);
-        bc.roll(5, 5, 5);
-        bc.roll(0, 0, 0);
-
-        assertEquals("Should be 10", 10, bc.frames.get(0).getSecondRoll());
-        assertEquals("Should be 10", 3, bc.frames.get(1).getSecondRoll());
-        assertEquals("Should be 10", 5, bc.frames.get(2).getSecondRoll());
-        assertEquals("Should be 10", 0, bc.frames.get(3).getSecondRoll());
-    }
-
-    @Test
-    public void testLastFrameWithExtraRollExtraRoll() throws Exception {
-        BowlingCalculator bc = new BowlingCalculator();
-        bc.roll(10, 10, 10);
-        bc.roll(3, 3, 3);
-        bc.roll(5, 5, 5);
-        bc.roll(0, 0, 0);
-
-        assertEquals("Should be 10", 10, bc.frames.get(0).getExtraRoll());
-        assertEquals("Should be 10", 3, bc.frames.get(1).getExtraRoll());
-        assertEquals("Should be 10", 5, bc.frames.get(2).getExtraRoll());
-        assertEquals("Should be 10", 0, bc.frames.get(3).getExtraRoll());
-    }
-
-
-    @Test
-    public void testFrameFirstRoll() throws Exception {
-        BowlingCalculator bc = new BowlingCalculator();
-
-        bc.roll(0, 2);
-        bc.roll(3, 0);
-        bc.roll(10);
-        bc.roll(7, 3);
-
-        assertEquals("Should be 0", 0, bc.frames.get(0).getFirstRoll());
-        assertEquals("Should be 3", 3, bc.frames.get(1).getFirstRoll());
-        assertEquals("Should be 10", 10, bc.frames.get(2).getFirstRoll());
-        assertEquals("Should be 10", 7, bc.frames.get(3).getFirstRoll());
-    }
-
-    @Test
-    public void testFrameSecondRoll() throws Exception {
-        BowlingCalculator bc = new BowlingCalculator();
-        bc.roll(0, 2);
-        bc.roll(3, 0);
-        bc.roll(7, 3);
-
-        assertEquals("Should be 0", 2, bc.frames.get(0).getSecondRoll());
-        assertEquals("Should be 0", 0, bc.frames.get(1).getSecondRoll());
-        assertEquals("Should be 0", 3, bc.frames.get(2).getSecondRoll());
-    }
-
-
-    @Test
-    public void testGetTotalScore() throws Exception {
-        BowlingCalculator bcForMaxScore = new BowlingCalculator();
-        for (int i = 0; i < 9; i++) {
-            bcForMaxScore.roll(10);
+        for (int i = 0; i < 10; i++) {
+            bc.frames.add(new Frame());
+            bc.frames.get(i).roll(0);
+            bc.frames.get(i).roll(0);
         }
-        bcForMaxScore.roll(10, 10, 10);
-
-        assertEquals("Should be 300", 300, bcForMaxScore.getTotalScore());
-
-        BowlingCalculator bc = new BowlingCalculator();
-        for (int i = 0; i < 9; i++) {
-            bc.roll(5, 5);
-        }
-        bc.roll(5, 5, 5);
-        assertEquals("Should be 150", 150, bc.getTotalScore());
-
-
+        assertEquals(0, bc.getTotalScore());
     }
+
+    @Test
+    public void testAllOne() throws Exception {
+        BowlingCalculator bc = new BowlingCalculator();
+        for (int i = 0; i < 10; i++) {
+            bc.frames.add(new Frame());
+            bc.frames.get(i).roll(1);
+            bc.frames.get(i).roll(1);
+        }
+        assertEquals(20, bc.getTotalScore());
+    }
+
+    @Test
+    public void testAllStrike() throws Exception {
+        BowlingCalculator bc = new BowlingCalculator();
+        for (int i = 0; i < 10; i++) {
+            bc.frames.add(new Frame());
+            bc.frames.get(i).setFrames(bc.frames);
+            bc.frames.get(i).setFrameNumber(i);
+            bc.frames.get(i).roll(10);
+        }
+        bc.frames.get(9).roll(10);
+        bc.frames.get(9).roll(10);
+        assertEquals(300, bc.getTotalScore());
+    }
+
+    @Test
+    public void testAllFive() throws Exception {
+        BowlingCalculator bc = new BowlingCalculator();
+        for (int i = 0; i < 10; i++) {
+            bc.frames.add(new Frame());
+            bc.frames.get(i).setFrames(bc.frames);
+            bc.frames.get(i).setFrameNumber(i);
+            bc.frames.get(i).roll(5);
+            bc.frames.get(i).roll(5);
+        }
+        bc.frames.get(9).roll(5);
+        assertEquals(150, bc.getTotalScore());
+    }
+
+    @Test
+    public void testStrike() throws Exception {
+        BowlingCalculator bc = new BowlingCalculator();
+        bc.frames.add(new Frame());
+        bc.frames.get(0).setFrames(bc.frames);
+        bc.frames.get(0).setFrameNumber(0);
+        bc.frames.get(0).roll(10);
+
+        bc.frames.add(new Frame());
+        bc.frames.get(1).setFrames(bc.frames);
+        bc.frames.get(1).setFrameNumber(0);
+        bc.frames.get(1).roll(7);
+        bc.frames.get(1).roll(1);
+
+        for (int i = 2; i < 10; i++) {
+            bc.frames.add(new Frame());
+            bc.frames.get(i).setFrames(bc.frames);
+            bc.frames.get(i).setFrameNumber(i);
+            bc.frames.get(i).roll(0);
+            bc.frames.get(i).roll(0);
+        }
+        assertEquals(26, bc.getTotalScore());
+    }
+
+
 }

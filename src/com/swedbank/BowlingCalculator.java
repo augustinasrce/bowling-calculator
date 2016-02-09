@@ -1,47 +1,48 @@
 package com.swedbank;
 
-import java.awt.*;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class BowlingCalculator {
-    ArrayList<Frame> frames = new ArrayList<Frame>();
+    public ArrayList<Frame> frames;
 
-
-    public void roll(int score) {
-        roll(score, 10 - score);
+    public BowlingCalculator() {
+        frames = new ArrayList<Frame>();
     }
 
-    public void roll(int firstScore, int secondScore) {
-        frames.add(new Frame(firstScore, secondScore));
+    public void addFrame(int frameNumber) {
+        Frame frame = new Frame();
+        frame.setFrames(frames);
+        frame.setFrameNumber(frameNumber);
+        int score = new Random().nextInt(10);
+        if (frameNumber != 9) { // first 9 frames
+            frame.roll(score);
+            if (!frame.isStrike())
+                frame.roll(new Random().nextInt(10 - score));
+
+        } else { // 10th frame
+            frame.roll(score);
+            if (frame.isStrike()) {
+                score = new Random().nextInt(10);
+                frame.roll(score);
+                if (score == 10)
+                    frame.roll(new Random().nextInt(10));
+                else
+                    frame.roll(10 - score);
+            } else {
+                frame.roll(10 - score);
+                if (frame.isSpare())
+                    frame.roll(new Random().nextInt(10));
+            }
+        }
+        frames.add(frame);
     }
 
-    public void roll(int firstScore, int secondScore, int extraRollScore) {
-        frames.add(new Frame(firstScore, secondScore, extraRollScore));
-    }
 
     public int getTotalScore() {
         int totalScore = 0;
-        for (int i = 0; i < frames.size(); i++) {
-            if (i == frames.size() - 1) {
-                if (frames.get(i).getFrameResult().equals("X"))
-                    totalScore += 10 + frames.get(i).getSecondRoll() + frames.get(i).getExtraRoll();
-                else if (frames.get(i).getFrameResult().contains("\\"))
-                    totalScore += 10 + frames.get(i).getExtraRoll();
-                else
-                    totalScore += frames.get(i).getFrameScore();
-            } else {
-                if (frames.get(i).getFrameResult().equals("X")) {
-                    if (frames.get(i + 1).getFrameResult().equals("X")) {
-                        totalScore += 20 + frames.get(i + 2).getFirstRoll();
-                    } else {
-                        totalScore += 10 + frames.get(i + 1).getFirstRoll() + frames.get(i + 1).getSecondRoll();
-                    }
-                } else if (frames.get(i).getFrameResult().equals("\\")) {
-                    totalScore += 10 + frames.get(i + 1).getFirstRoll();
-                } else {
-                    totalScore += frames.get(i).getFrameScore();
-                }
-            }
+        for (Frame f : frames) {
+            totalScore += f.getFrameScore();
         }
         return totalScore;
     }
