@@ -79,6 +79,4 @@ public class Tests {
         }
         assertEquals(26, bc.getTotalScore());
     }
-
-
 }

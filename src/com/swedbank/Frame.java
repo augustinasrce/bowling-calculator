@@ -3,7 +3,7 @@ package com.swedbank;
 import java.util.ArrayList;
 
 /**
- * Created by p998ueh on 2016.02.09.
+ * Created by p998ueh on 2016.02.09!
  */
 public class Frame {
     private ArrayList<Integer> rollScoreList = new ArrayList<Integer>();
@@ -27,17 +27,11 @@ public class Frame {
     }
 
     public boolean isStrike() {
-        if (rollScoreList.get(0) == 10)
-            return true;
-        else
-            return false;
+        return rollScoreList.get(0) == 10;
     }
 
     public boolean isSpare() {
-        if (rollScoreList.get(0) + rollScoreList.get(1) == 10)
-            return true;
-        else
-            return false;
+        return rollScoreList.get(0) + rollScoreList.get(1) == 10;
     }
 
     public int strikeBonus() {
