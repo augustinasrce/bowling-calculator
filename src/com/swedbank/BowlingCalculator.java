@@ -22,16 +22,25 @@ public class BowlingCalculator {
     public int getTotalScore() {
         int totalScore = 0;
         for (int i = 0; i < frames.size(); i++) {
-            if (frames.get(i).getFrameResult().equals("X")) {
-                if (frames.get(i + 1).getFrameResult().equals("X")) {
-                    totalScore += 20 + frames.get(i + 2).getFirstRoll();
-                } else {
-                    totalScore += 10 + frames.get(i + 1).getFirstRoll() + frames.get(i + 1).getSecondRoll();
-                }
-            } else if (frames.get(i).getFrameResult().equals("\\")) {
-                totalScore += 10 + frames.get(i + 1).getFirstRoll();
+            if (i == frames.size() - 1) {
+                if (frames.get(i).getFrameResult().equals("X"))
+                    totalScore += 10 + frames.get(i).getSecondRoll() + frames.get(i).getExtraRoll();
+                else if (frames.get(i).getFrameResult().contains("\\"))
+                    totalScore += 10 + frames.get(i).getExtraRoll();
+                else
+                    totalScore += frames.get(i).getFrameScore();
             } else {
-                totalScore += frames.get(i).getFrameScore();
+                if (frames.get(i).getFrameResult().equals("X")) {
+                    if (frames.get(i + 1).getFrameResult().equals("X")) {
+                        totalScore += 20 + frames.get(i + 2).getFirstRoll();
+                    } else {
+                        totalScore += 10 + frames.get(i + 1).getFirstRoll() + frames.get(i + 1).getSecondRoll();
+                    }
+                } else if (frames.get(i).getFrameResult().equals("\\")) {
+                    totalScore += 10 + frames.get(i + 1).getFirstRoll();
+                } else {
+                    totalScore += frames.get(i).getFrameScore();
+                }
             }
         }
         return totalScore;

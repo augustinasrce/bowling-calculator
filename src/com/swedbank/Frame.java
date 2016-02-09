@@ -6,14 +6,6 @@ package com.swedbank;
 public class Frame {
     private int firstRoll;
     private int secondRoll;
-    private int extraRoll;
-
-
-    public Frame(int firstRoll, int secondRoll, int extraRoll){
-        this.firstRoll = firstRoll;
-        this.secondRoll = secondRoll;
-        this.extraRoll = extraRoll;
-    }
 
     public Frame(int firstRoll, int secondRoll) {
         this.firstRoll = firstRoll;
@@ -28,10 +20,6 @@ public class Frame {
         return secondRoll;
     }
 
-    public int getExtraRoll() {
-        return extraRoll;
-    }
-
     public String getFrameResult() {
         if (firstRoll == 10)
             return "X";
@@ -41,7 +29,7 @@ public class Frame {
             return Integer.toString(firstRoll + secondRoll);
     }
 
-    public int getFrameScore(){
-        return firstRoll+secondRoll;
+    public int getFrameScore() {
+        return firstRoll + secondRoll;
     }
 }
